@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+  --color-twitter-text: #e7e9ea;
+  --color-twitter-muted: #71767b;
+  --color-twitter-border: #2f3336;
+  --color-twitter-card: #16181c;
+  --color-twitter-blue: #1d9bf0;
+  --color-twitter-like: #f91880;
+  --color-twitter-danger: #f4212e;
+  --color-twitter-success: #00ba7c;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply min-h-screen bg-black text-twitter-text font-sans antialiased;
+  }
+
+  #root {
+    @apply min-h-screen;
+  }
+
+  a {
+    @apply text-twitter-blue no-underline hover:underline;
+  }
+
+  button,
+  input,
+  textarea {
+    font: inherit;
+  }
+
+  button {
+    @apply cursor-pointer;
+  }
+}
