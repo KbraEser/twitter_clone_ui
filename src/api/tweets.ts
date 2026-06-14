@@ -39,6 +39,11 @@ export async function getTweetsByUserId(userId: number): Promise<Tweet[]> {
   return response.data
 }
 
+export async function getTweetById(id:number):Promise<Tweet>{
+  const response = await api.get<Tweet>(`tweet/findById`,{params:{id}})
+  return response.data
+}
+
 export async function createTweet(data: TweetRequest): Promise<Tweet> {
   const response = await api.post<Tweet>('/tweet', data)
   return response.data
