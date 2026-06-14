@@ -44,7 +44,7 @@ export default function App() {
           }
         >
           <Route path="/" element={<HomePage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/:userId" element={<ProfilePage />} />
           <Route path='/tweet/:id' element={<TweetDetailPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

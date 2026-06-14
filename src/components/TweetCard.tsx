@@ -182,11 +182,12 @@ export default function TweetCard({ tweet, onUpdate, defaultCommentsOpen = false
         {author?.picture ? <img src={author.picture} alt={displayName} className="h-full w-full object-cover" /> : <span>{displayName.charAt(0).toUpperCase()}</span>}
       </div>
       <div className="min-w-0 flex-1">
+        <Link to={`/profile/${author?.id}`}>
         <div className="mb-1 flex flex-wrap items-baseline gap-2">
           <strong className="text-twitter-text">{displayName}</strong>
           <span className="text-sm text-twitter-muted">@{author?.email?.split('@')[0]}</span>
         </div>
-
+        </Link>
         
         {isPureRetweet && parent && (
           <>
