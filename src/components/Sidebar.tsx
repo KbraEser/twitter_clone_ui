@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
-import { logout, selectDisplayName, selectEmail } from '../store/authSlice'
+import { logout, selectDisplayName, selectEmail, selectUserId } from '../store/authSlice'
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   [
@@ -12,6 +12,7 @@ export default function Sidebar() {
   const dispatch = useAppDispatch()
   const email = useAppSelector(selectEmail)
   const displayName = useAppSelector(selectDisplayName)
+  const userId = useAppSelector(selectUserId)
 
   return (
     <aside className="sticky top-0 flex h-screen w-[72px] flex-col gap-2 border-r border-twitter-border p-2 md:w-[260px] md:p-4 md:items-stretch items-center">
@@ -20,7 +21,7 @@ export default function Sidebar() {
         <NavLink to="/" className={navLinkClass}>
           Ana Sayfa
         </NavLink>
-        <NavLink to="/profile" className={navLinkClass}>
+        <NavLink to={`/profile/${userId}`} className={navLinkClass}>
           Profil
         </NavLink>
       </nav>

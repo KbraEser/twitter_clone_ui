@@ -4,6 +4,7 @@ import TweetCard from '../components/TweetCard'
 import { useAppSelector } from '../store/hooks'
 import { selectDisplayName, selectEmail, selectUserId } from '../store/authSlice'
 import type { Tweet } from '../types'
+import { useParams } from 'react-router-dom'
 
 export default function ProfilePage() {
   const email = useAppSelector(selectEmail)
@@ -12,12 +13,17 @@ export default function ProfilePage() {
   const [tweets, setTweets] = useState<Tweet[]>([])
   const [loading, setLoading] = useState(true)
 
+  const { userId:userIdParam } = useParams<{ userId: string }>()
+
+  const profileUserId = Number(userIdParam)
+  // const isOwnProfile = profileUserId === userId
+
   const loadTweets = useCallback(async () => {
     if (!userId) return
     setLoading(true)
-    try { setTweets((await getTweetsByUserId(userId)).reverse()) }
+    try { setTweets((await getTweetsByUserId(profileUserId)).reverse()) }
     finally { setLoading(false) }
-  }, [userId])
+  }, [profileUserId])
 
   useEffect(() => { loadTweets() }, [loadTweets])
 
