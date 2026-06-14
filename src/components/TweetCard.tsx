@@ -11,10 +11,12 @@ import {
   isAlreadyLikedError,
   isLikeNotFoundError,
 } from '../utils/likesStorage'
+import { Link } from 'react-router-dom'
 
 interface TweetCardProps {
   tweet: Tweet
   onUpdate: () => void
+  defaultCommentsOpen?: boolean
 }
 
 const actionBtn =
@@ -23,12 +25,12 @@ const actionBtn =
 const textareaClass =
   'resize-none rounded-lg border border-twitter-border bg-black px-3 py-2 text-twitter-text focus:outline-none'
 
-export default function TweetCard({ tweet, onUpdate }: TweetCardProps) {
+export default function TweetCard({ tweet, onUpdate, defaultCommentsOpen = false }: TweetCardProps) {
   const dispatch = useAppDispatch()
   const userId = useAppSelector(selectUserId)
   const liked = useAppSelector((state) => selectIsTweetLiked(state, tweet.id))
   const [comments, setComments] = useState<Comment[]>([])
-  const [showCommentsSection, setShowCommentsSection] = useState(false)
+  const [showCommentsSection, setShowCommentsSection] = useState(defaultCommentsOpen ?? false)
   const [commentsLoaded, setCommentsLoaded] = useState(false)
   const [commentsLoading, setCommentsLoading] = useState(false)
   const [showRetweetMenu, setShowRetweetMenu] = useState(false)
@@ -39,6 +41,7 @@ export default function TweetCard({ tweet, onUpdate }: TweetCardProps) {
   const [editText, setEditText] = useState(tweet.content ?? '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  
 
   useEffect(() => {
     setEditText(tweet.content ?? '')
@@ -50,6 +53,7 @@ export default function TweetCard({ tweet, onUpdate }: TweetCardProps) {
   const parent = tweet.parentTweet
   const isPureRetweet = !!parent && !tweet.content?.trim()
   const canEdit = isOwner && !isPureRetweet
+
 
   const loadComments = useCallback(async () => {
     setCommentsLoading(true)
@@ -66,6 +70,14 @@ export default function TweetCard({ tweet, onUpdate }: TweetCardProps) {
       setCommentsLoading(false)
     }
   }, [tweet.id])
+
+  useEffect(()=>{
+    if(defaultCommentsOpen){
+      setShowCommentsSection(true)
+      loadComments()
+    }
+
+  },[defaultCommentsOpen,loadComments])
 
   async function toggleCommentsSection() {
     const willOpen = !showCommentsSection
@@ -165,6 +177,7 @@ export default function TweetCard({ tweet, onUpdate }: TweetCardProps) {
 
   return (
     <article className="flex gap-3 border-b border-twitter-border px-5 py-4 transition-colors hover:bg-[#080808]">
+      
       <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-twitter-blue font-bold text-white">
         {author?.picture ? <img src={author.picture} alt={displayName} className="h-full w-full object-cover" /> : <span>{displayName.charAt(0).toUpperCase()}</span>}
       </div>
@@ -174,15 +187,23 @@ export default function TweetCard({ tweet, onUpdate }: TweetCardProps) {
           <span className="text-sm text-twitter-muted">@{author?.email?.split('@')[0]}</span>
         </div>
 
+        
         {isPureRetweet && parent && (
           <>
             <p className="mb-2 text-sm text-twitter-muted">🔁 Retweetlendi</p>
+            <Link to={`/tweet/${parent.id}`}>
             <QuotedTweet tweet={parent} />
+            </Link>
           </>
         )}
+
+
         {!isPureRetweet && !isEditing && tweet.content && (
-          <p className="mb-3 whitespace-pre-wrap break-words text-twitter-text">{tweet.content}</p>
+          <Link to={`/tweet/${tweet.id}`}>
+            <p className="mb-3 whitespace-pre-wrap break-words text-twitter-text">{tweet.content}</p>
+          </Link>
         )}
+
         {!isPureRetweet && isEditing && (
           <div className="mb-3 flex flex-col gap-2">
             <textarea
@@ -211,10 +232,15 @@ export default function TweetCard({ tweet, onUpdate }: TweetCardProps) {
               </button>
             </div>
           </div>
+        
         )}
-        {!isPureRetweet && parent && <QuotedTweet tweet={parent} />}
-
+        
+      
+        
+        {!isPureRetweet && parent && <Link to={`/tweet/${parent.id}`}><QuotedTweet tweet={parent} /></Link>}
+       
         <div className="flex flex-wrap gap-4">
+      
           <div className="relative">
             <button type="button" onClick={() => { setShowRetweetMenu(!showRetweetMenu); setShowCommentsSection(false) }} disabled={loading} className={actionBtn}>
               Retweet
@@ -230,6 +256,7 @@ export default function TweetCard({ tweet, onUpdate }: TweetCardProps) {
               </div>
             )}
           </div>
+        
           <button
             type="button"
             onClick={toggleCommentsSection}

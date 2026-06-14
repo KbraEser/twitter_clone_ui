@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import HomePage from './pages/HomePage'
 import ProfilePage from './pages/ProfilePage'
+import TweetDetailPage from './pages/TweetDetailPage'
 
 function GuestRoute({ children }: { children: ReactNode }) {
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
@@ -44,6 +45,7 @@ export default function App() {
         >
           <Route path="/" element={<HomePage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path='/tweet/:id' element={<TweetDetailPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
